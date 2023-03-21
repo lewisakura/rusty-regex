@@ -12,13 +12,7 @@ lazy_static::lazy_static! {
   };
 }
 
-#[napi]
-pub fn is_valid_regex(regex: String) -> bool {
-  Regex::new(&regex).is_ok()
-}
-
-#[napi]
-pub fn matches(regex: String, string: String) -> bool {
+fn get_regex_instance(regex: String) -> Regex {
   let mut cache = REGEX_CACHE.lock().unwrap();
 
   if !cache.contains_key(&regex) {
@@ -31,5 +25,34 @@ pub fn matches(regex: String, string: String) -> bool {
     cache.insert(regex.clone(), reg);
   }
 
-  cache.get(&regex).unwrap().is_match(&string)
+  cache.get(&regex).unwrap().clone()
+}
+
+#[napi]
+pub fn is_valid_regex(regex: String) -> bool {
+  Regex::new(&regex).is_ok()
+}
+
+#[napi]
+pub fn matches(regex: String, string: String) -> bool {
+  get_regex_instance(regex).is_match(&string)
+}
+
+#[napi]
+pub fn parse_template(regex: String, string: String, template: String) -> String {
+  let reg = get_regex_instance(regex);
+
+  // get the captures
+  let captures = reg.captures(&string);
+
+  match captures {
+    None => template,
+    Some(caps) => {
+      // expand the template using them
+      let mut dst = String::new();
+      caps.expand(&template, &mut dst);
+
+      dst
+    }
+  }
 }

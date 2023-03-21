@@ -5,3 +5,4 @@
 
 export function isValidRegex(regex: string): boolean
 export function matches(regex: string, string: string): boolean
+export function parseTemplate(regex: string, string: string, template: string): string

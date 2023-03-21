@@ -252,7 +252,8 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`)
 }
 
-const { isValidRegex, matches } = nativeBinding
+const { isValidRegex, matches, parseTemplate } = nativeBinding
 
 module.exports.isValidRegex = isValidRegex
 module.exports.matches = matches
+module.exports.parseTemplate = parseTemplate
