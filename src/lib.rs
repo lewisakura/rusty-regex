@@ -19,6 +19,7 @@ fn get_regex_instance(regex: String) -> Regex {
     let reg = RegexBuilder::new(&regex)
       .multi_line(true)
       .case_insensitive(true)
+      .dot_matches_new_line(true)
       .build()
       .unwrap();
 
